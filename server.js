@@ -22,7 +22,7 @@ http
       }
     );
     if (q.pathname.includes("documentation")) {
-      filePath = __dirname + "documentation.html";
+      filePath = __dirname + "\\documentation.html";
     } else {
       filePath = "index.html";
     }
