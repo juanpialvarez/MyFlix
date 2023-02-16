@@ -2,6 +2,8 @@ const http = require("http"),
   url = require("url"),
   fs = require("fs");
 
+const PORT = 8080;
+
 http
   .createServer((request, response) => {
     let addr = request.url;
@@ -35,4 +37,4 @@ http
       response.end();
     });
   })
-  .listen(8080);
+  .listen(PORT);
