@@ -1,0 +1,23 @@
+{
+  "name": "movie_api",
+  "version": "1.0.0",
+  "description": "Movie Api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juanpialvarez/MyFlix.git"
+  },
+  "author": "Juan Pablo Alvarez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juanpialvarez/MyFlix/issues"
+  },
+  "homepage": "https://github.com/juanpialvarez/MyFlix#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2"
+  }
+}
