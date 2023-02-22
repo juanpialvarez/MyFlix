@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "Peter",
+    "userMovies": []
+  },
+  {
+    "id": 2,
+    "name": "Remus",
+    "userMovies": []
+  },
+  {
+    "id": 3,
+    "name": "Lupin",
+    "userMovies": []
+  },
+  {
+    "id": 4,
+    "name": "James",
+    "userMovies": []
+  },
+  {
+    "id": 5,
+    "name": "Peeves",
+    "userMovies": []
+  },
+  {
+    "id": 6,
+    "name": "Harry",
+    "userMovies": []
+  },
+  {
+    "id": 7,
+    "name": "Hermione",
+    "userMovies": []
+  }
+]

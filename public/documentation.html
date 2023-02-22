@@ -7,12 +7,82 @@
     <title>My Flix</title>
   </head>
   <body>
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sodales
-      luctus dui at pulvinar. Nulla facilisis fringilla porttitor. Praesent
-      tincidunt diam eget felis ultricies fermentum. Vestibulum vitae faucibus
-      mi. Vestibulum ipsum enim, tincidunt id dapibus ac, ornare ac elit.
-      Integer non velit eros.
-    </p>
+    <table>
+      <tbody>
+        <tr>
+          <td>GET</td>
+          <td>
+            <ul>
+              <li>Return list of all movies to user</li>
+              <li>Return movie data about a single movie</li>
+              <li>Return data about a movie's genre</li>
+              <li>Return data about a director by name</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>POST</td>
+          <td>
+            <ul>
+              <li>Allow a user to register</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>PUT</td>
+          <td>
+            <ul>
+              <li>Allow user to update their user name</li>
+              <li>
+                Allow user to add a movie from the movie list to their
+                favourites.
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>DELETE</td>
+          <td>
+            <ul>
+              <li>Allow users to remove a movie from their favourites</li>
+              <li>Allow existing user to deregister</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ul>
+      <li><em>GET /movies</em> Returns a list of movies. Data format: JSON</li>
+      <li>
+        <em>GET /movies/:title</em> Returns a movie by its title. Data format:
+        JSON.
+      </li>
+      <li>
+        <em>GET /movies/genre/:title</em> Returns a genre by the title of a
+        movie. Data format: JSON.
+      </li>
+      <li>
+        <em>GET /movies/director/:name</em> Returns a director's details by
+        their name. Data format: JSON.
+      </li>
+      <li>
+        <em>POST /users</em> Creates a user. Data format: JSON. Expected Body:
+        <code> { "name": "name" "userMovies": [] } </code>
+      </li>
+      <li>
+        <em>PUT /users/:userName/:newName</em> Updates a user's username. Data
+        format: JSON.
+      </li>
+      <li>
+        <em>PUT /users/:userName/addMovie/:title</em> Adds a movie to the user's
+        favourites. Data format: JSON.
+      </li>
+      <li>
+        <em>DELETE /users/:userName/deleteMovie/:title</em> Removes a movie from
+        the user's favourites.
+      </li>
+      <li><em>DELETE /users/:id</em> Removes a user</li>
+    </ul>
   </body>
 </html>
