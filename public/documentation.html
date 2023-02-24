@@ -12,7 +12,7 @@
       <h2>Features</h2>
       <tbody>
         <tr>
-          <td>GET</td>
+          <td class="method">GET</td>
           <td>
             <ul>
               <li>Return list of all movies to user</li>
@@ -23,7 +23,7 @@
           </td>
         </tr>
         <tr>
-          <td>POST</td>
+          <td class="method">POST</td>
           <td>
             <ul>
               <li>Allow a user to register</li>
@@ -31,7 +31,7 @@
           </td>
         </tr>
         <tr>
-          <td>PUT</td>
+          <td class="method">PUT</td>
           <td>
             <ul>
               <li>Allow user to update their user name</li>
@@ -43,7 +43,7 @@
           </td>
         </tr>
         <tr>
-          <td>DELETE</td>
+          <td class="method">DELETE</td>
           <td>
             <ul>
               <li>Allow users to remove a movie from their favourites</li>
@@ -56,36 +56,70 @@
 
     <h1>HTML methods and specifications</h1>
     <ul>
-      <li><em>GET /movies</em> Returns a list of movies. Data format: JSON</li>
       <li>
-        <em>GET /movies/:title</em> Returns a movie by its title. Data format:
-        JSON.
+        <p>
+          <span>GET /movies</span>: Returns a list of movies.
+          <span> Data format: JSON </span>
+        </p>
       </li>
       <li>
-        <em>GET /movies/genre/:genre</em> Returns details of a genre by name.
-        Data format: JSON.
+        <p>
+          <span>GET /movies/:title</span>: Returns a movie by its title.
+          <span> Data format: JSON </span>
+        </p>
       </li>
       <li>
-        <em>GET /movies/director/:name</em> Returns a director's details by
-        their name. Data format: JSON.
+        <p>
+          <span>GET /movies/genre/:genre</span>: Returns genre's details by
+          name. <span> Data format: JSON </span>
+        </p>
       </li>
       <li>
-        <em>POST /users</em> Creates a user. Data format: JSON. Expected Body:
-        <code> { "name": "name" "userMovies": [] } </code>
+        <p>
+          <span>GET /movies/director/:name</span> Returns a director's details by
+          their name. <span> Data format: JSON </span>
+        </p>
       </li>
       <li>
-        <em>PUT /users/:userName/:newName</em> Updates a user's username. Data
-        format: JSON.
+        <p>
+          <span>POST /users</span> Creates a user.<span> Data format: JSON </span> 
+          <br>
+          <br> 
+          Expected
+          Body:
+          <pre> 
+            <code> { 
+              "userName": {type: String, required: true}, 
+              "spanail": {type: String, required: true}, 
+              "password": {type: String, required: true}, 
+              "birthday": Date,
+              } </code>
+          </pre>
+        </p>
       </li>
       <li>
-        <em>PUT /users/:userName/addMovie/:title</em> Adds a movie to the user's
-        favourites. Data format: JSON.
+        <p>
+          <span>PUT /users/:userName/:newName</span> Updates a user's username.
+          <span> Data format: JSON </span>
+        </p>
       </li>
       <li>
-        <em>DELETE /users/:userName/deleteMovie/:title</em> Removes a movie from
-        the user's favourites.
+        <p>
+          <span>PUT /users/:userName/movies/:movieId</span> Adds a movie to the
+          user's favourites useing user name and movie ID.<span> Data format: JSON </span>
+        </p>
       </li>
-      <li><em>DELETE /users/:id</em> Removes a user</li>
+      <li>
+        <p>
+          <span>DELETE /users/:userName/movies/:movieId</span> Removes a movie
+          from the user's favourites. <span> Data format: JSON </span>
+        </p>
+      </li>
+      <li>
+        <p>
+          <span>DELETE /users/:userName</span> Removes a user using their user name.
+        </p>
+      </li>
     </ul>
   </body>
 </html>
