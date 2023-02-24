@@ -58,25 +58,25 @@
     <ul>
       <li>
         <p>
-          <span>GET /movies</span>: Returns a list of movies.
+          <span>GET /movies</span> Returns a list of movies.
           <span> Data format: JSON </span>
         </p>
       </li>
       <li>
         <p>
-          <span>GET /movies/:title</span>: Returns a movie by its title.
+          <span>GET /movies/title</span> Returns a movie by its title.
           <span> Data format: JSON </span>
         </p>
       </li>
       <li>
         <p>
-          <span>GET /movies/genre/:genre</span>: Returns genre's details by
+          <span>GET /movies/genre/genre</span> Returns genre's details by
           name. <span> Data format: JSON </span>
         </p>
       </li>
       <li>
         <p>
-          <span>GET /movies/director/:name</span> Returns a director's details by
+          <span>GET /movies/director/name</span> Returns a director's details by
           their name. <span> Data format: JSON </span>
         </p>
       </li>
@@ -99,25 +99,25 @@
       </li>
       <li>
         <p>
-          <span>PUT /users/:userName/:newName</span> Updates a user's username.
+          <span>PUT /users/user-name/new-name</span> Updates a user's username.
           <span> Data format: JSON </span>
         </p>
       </li>
       <li>
         <p>
-          <span>PUT /users/:userName/movies/:movieId</span> Adds a movie to the
+          <span>PUT /users/user-name/movies/movie-id</span> Adds a movie to the
           user's favourites useing user name and movie ID.<span> Data format: JSON </span>
         </p>
       </li>
       <li>
         <p>
-          <span>DELETE /users/:userName/movies/:movieId</span> Removes a movie
+          <span>DELETE /users/user-name/movies/movie-id</span> Removes a movie
           from the user's favourites. <span> Data format: JSON </span>
         </p>
       </li>
       <li>
         <p>
-          <span>DELETE /users/:userName</span> Removes a user using their user name.
+          <span>DELETE /users/user-name</span> Removes a user using their user name.
         </p>
       </li>
     </ul>
