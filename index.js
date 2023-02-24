@@ -40,8 +40,8 @@ app.get("/movies/:title", (req, res) => {
 });
 
 // Get genre by title
-app.get("/movies/genre/:title", (req, res) => {
-  const genre = movies.find((movie) => movie.title === req.params.title).genre;
+app.get("/movies/genre/:genre", (req, res) => {
+  const genre = movies.find((movie) => movie.genre === req.params.genre).genre;
   if (genre) {
     res.status(200).json(genre);
   } else {
