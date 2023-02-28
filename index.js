@@ -19,10 +19,7 @@ const movies = Models.Movie;
 const users = Models.User;
 
 // mongoose.connect("mongodb://127.0.0.1/myFlix", { useNewUrlParser: true });
-mongoose.connect(
-  "mongodb+srv://juanpabloalvarezv:myFlixpassword1@myflix.onwr2fl.mongodb.net/?retryWrites=true&w=majority",
-  { useNewUrlParser: true }
-);
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true });
 mongoose.set("strictQuery", true);
 const db = mongoose.connection;
 db.on("error", (err) => console.error(err));
