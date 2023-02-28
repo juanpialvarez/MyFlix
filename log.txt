@@ -164,3 +164,4 @@
 ::1 - - [28/Feb/2023:19:21:39 +0000] "POST /users HTTP/1.1" 500 965 "-" "PostmanRuntime/7.31.1"
 ::1 - - [28/Feb/2023:19:22:21 +0000] "POST /users HTTP/1.1" 201 235 "-" "PostmanRuntime/7.31.1"
 ::1 - - [28/Feb/2023:19:30:39 +0000] "POST /login?Username=Sirius&Password=sirius123 HTTP/1.1" 200 715 "-" "PostmanRuntime/7.31.1"
+127.0.0.1 - - [28/Feb/2023:22:47:06 +0000] "GET /movies HTTP/1.1" 200 12812 "-" "PostmanRuntime/7.31.1"

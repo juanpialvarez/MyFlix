@@ -65,28 +65,19 @@ let auth = require("./auth")(app);
 
 // Get movies
 
-app.get("/movies", (req, res) => {
-  movies
-    .find()
-    .then((movie) => res.status(200).json(movie))
-    .catch((err) => {
-      console.err(err);
-      res.status(500).send(`Error: ${err}`);
-    });
-});
-// app.get(
-//   "/movies",
-//   passport.authenticate("jwt", { session: false }),
-//   (req, res) => {
-//     movies
-//       .find()
-//       .then((movie) => res.status(200).json(movie))
-//       .catch((err) => {
-//         console.err(err);
-//         res.status(500).send(`Error: ${err}`);
-//       });
-//   }
-// );
+app.get(
+  "/movies",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    movies
+      .find()
+      .then((movie) => res.status(200).json(movie))
+      .catch((err) => {
+        console.err(err);
+        res.status(500).send(`Error: ${err}`);
+      });
+  }
+);
 
 // Get movie by title
 app.get(
