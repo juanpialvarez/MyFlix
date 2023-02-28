@@ -1,3 +1,5 @@
+const port = process.env.PORT || 8080;
+
 const express = require("express"),
   morgan = require("morgan"),
   fs = require("fs"),
@@ -6,7 +8,10 @@ const express = require("express"),
   uuid = require("uuid"),
   mongoose = require("mongoose"),
   Models = require("./models.js"),
-  passport = require("passport");
+  passport = require("passport"),
+  cors = require("cors"),
+  bcrypt = require("bcrypt"),
+  { check, validationResult } = require("express-validator");
 
 require("./passport");
 
@@ -24,7 +29,23 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
   flags: "a",
 });
 
+let allowedOrigins = ["http://localhost:8080", "http://testsite.com"];
+
 // Middware
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        let message =
+          "The CORS policy of this application doesn't allow access from origin " +
+          origin;
+        return cb(new Error(message), false);
+      }
+      return cb(null, true);
+    },
+  })
+);
 app.use(morgan("combined", { stream: accessLogStream }));
 app.use(express.static("public"));
 app.use((err, req, res, next) => {
@@ -121,31 +142,48 @@ app.get(
 
 // Post new user.
 
-app.post("/users", (req, res) => {
-  let newUser = req.body;
-  users.findOne({ userName: newUser.userName }).then((user) => {
-    if (user) {
-      return res.status(
-        res.status(400).send(`${newUser.userName} already exists.`)
-      );
-    } else {
-      users
-        .create({
-          userName: newUser.userName,
-          email: newUser.email,
-          password: newUser.password,
-          birthday: newUser.birthday,
-        })
-        .then((user) => {
-          res.status(201).json(user);
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send("Error: " + error);
-        });
+app.post(
+  "/users",
+  [
+    check("userName", "Username is required").isLength({ min: 5 }),
+    check(
+      "userName",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("password", "Password is required").not().isEmpty(),
+    check("email", "Email does not appear to be valid").isEmail(),
+  ],
+  (req, res) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
     }
-  });
-});
+    let newUser = req.body;
+    let hashedPassword = users.hashPassword(newUser.password);
+    users.findOne({ userName: newUser.userName }).then((user) => {
+      if (user) {
+        return res.status(
+          res.status(400).send(`${newUser.userName} already exists.`)
+        );
+      } else {
+        users
+          .create({
+            userName: newUser.userName,
+            email: newUser.email,
+            password: hashedPassword,
+            birthday: newUser.birthday,
+          })
+          .then((user) => {
+            res.status(201).json(user);
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send("Error: " + error);
+          });
+      }
+    });
+  }
+);
 
 // Put new user name
 app.put(
@@ -252,6 +290,7 @@ app.delete(
 );
 
 // Listen
-app.listen(8080, () => {
-  console.log("App listening on port 8080");
+
+app.listen(port, "0.0.0.0", () => {
+  console.log("Listening on Port " + port);
 });

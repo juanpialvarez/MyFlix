@@ -1,7 +1,8 @@
 const passport = require("passport"),
   LocalStrategy = require("passport-local").Strategy,
   Models = require("./models.js"),
-  passportJWT = require("passport-jwt");
+  passportJWT = require("passport-jwt"),
+  bcrypt = require("bcrypt");
 
 let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
@@ -26,6 +27,11 @@ passport.use(
           return callback(null, false, {
             message: "Incorrect username or password.",
           });
+        }
+
+        if (!user.validatePassword(password)) {
+          console.log("Incorrect password");
+          return callback(null, false, { message: "Incorrect Password" });
         }
 
         console.log("finished");
