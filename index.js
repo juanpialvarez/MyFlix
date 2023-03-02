@@ -1,3 +1,5 @@
+const test = "test";
+console.log(test);
 const port = process.env.PORT || 8080;
 
 const express = require("express"),
