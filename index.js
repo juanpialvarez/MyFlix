@@ -68,7 +68,7 @@ app.get(
   (req, res) => {
     const { userName } = req.params;
     users
-      .findOne({ username: userName })
+      .findOne({ userName: userName })
       .then((user) => {
         if (user) {
           res.status(201).json(user);
