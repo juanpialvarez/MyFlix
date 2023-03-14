@@ -212,40 +212,6 @@ app.post(
   }
 );
 
-//update user password
-app.put(
-  "/users/updatePassword/:userName/",
-  passport.authenticate("jwt", { session: false }),
-  [check("password", "Password is required").not().isEmpty()],
-  (req, res) => {
-    const { userName } = req.params;
-    let password = req.body;
-    let hashedPassword = users.hashPassword(password.password);
-    users.findOne({ userName: userName }).then((user) => {
-      if (!user) {
-        return res.status(res.status(400).send(`${userName} doesn't exists.`));
-      }
-    });
-    users
-      .findOneAndUpdate(
-        { userName: userName },
-        {
-          $set: {
-            password: hashedPassword,
-          },
-        },
-        { new: true }
-      )
-      .then((user) => {
-        res.status(201).json(user);
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send("Error: " + error);
-      });
-  }
-);
-
 //update user
 app.put(
   "/users/update/:userName",
@@ -266,6 +232,7 @@ app.put(
     }
     const { userName } = req.params;
     let updateUser = req.body;
+    let hashedPassword = users.hashPassword(updateUser.password);
     users.findOne({ userName: userName }).then((user) => {
       if (!user) {
         return res.status(res.status(400).send(`${userName} doesn't exists.`));
@@ -278,6 +245,7 @@ app.put(
           $set: {
             userName: updateUser.userName,
             email: updateUser.email,
+            password: hashedPassword,
             birthday: updateUser.birthday,
           },
         },
