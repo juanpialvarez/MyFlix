@@ -62,6 +62,27 @@ app.get(
   }
 );
 
+app.get(
+  "/users/:userName",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { userName } = req.params;
+    users
+      .findOne({ username: userName })
+      .then((user) => {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(400).send(`User ${title} not found`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(`Error: ${err}`);
+      });
+  }
+);
+
 // Get movie by title
 app.get(
   "/movies/:title",
