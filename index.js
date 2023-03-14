@@ -223,7 +223,6 @@ app.put(
       "Username contains non alphanumeric characters - not allowed."
     ).isAlphanumeric(),
     check("email", "Email does not appear to be valid").isEmail(),
-    check("birthday", "Email is not a date").isDate(),
   ],
   (req, res) => {
     let errors = validationResult(req);
