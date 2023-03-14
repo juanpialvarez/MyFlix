@@ -23,7 +23,6 @@ let allowedOrigins = [
   "http://localhost:8080",
   "http://testsite.com",
   "http://localhost:1234",
-  "http://localhost:1234/Profile",
   "myflix94.netlify.app",
 ];
 // mongoose.connect("mongodb://127.0.0.1/myFlix", { useNewUrlParser: true });
@@ -237,6 +236,13 @@ app.put(
     users.findOne({ userName: userName }).then((user) => {
       if (!user) {
         return res.status(res.status(400).send(`${userName} doesn't exists.`));
+      }
+    });
+    users.findOne({ userName: updateUser.userName }).then((user) => {
+      if (user) {
+        return res.status(
+          res.status(400).send(`${updateUser.userName} already exists.`)
+        );
       }
     });
     users
