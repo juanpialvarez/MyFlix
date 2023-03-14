@@ -127,27 +127,6 @@ app.get(
   }
 );
 
-app.get(
-  "/users/favorites/:userName",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    const { userName } = req.params;
-    movies
-      .findOne({ "user.userName": userName })
-      .then((user) => {
-        if (user) {
-          res.status(201).json(user.favouriteMovies);
-        } else {
-          res.status(400).send(`User ${userName} not found`);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send(`Error: ${err}`);
-      });
-  }
-);
-
 // Get director by name
 app.get(
   "/movies/director/:name",
@@ -215,6 +194,85 @@ app.post(
   }
 );
 
+//update user password
+app.post(
+  "/users/updatePassword/:userName/",
+  [check("password", "Password is required").not().isEmpty()],
+  (req, res) => {
+    const { userName } = req.params;
+    let password = req.body;
+    let hashedPassword = users.hashPassword(password.password);
+    users.findOne({ userName: userName }).then((user) => {
+      if (!user) {
+        return res.status(res.status(400).send(`${userName} doesn't exists.`));
+      }
+    });
+    users
+      .findOneAndUpdate(
+        { userName: userName },
+        {
+          $set: {
+            password: hashedPassword,
+          },
+        },
+        { new: true }
+      )
+      .then((user) => {
+        res.status(201).json(user);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send("Error: " + error);
+      });
+  }
+);
+
+//update user
+app.put(
+  "/users/update/:userName",
+  [
+    check("userName", "Username is required").isLength({ min: 5 }),
+    check(
+      "userName",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("email", "Email does not appear to be valid").isEmail(),
+    check("birthday", "Email is not a date").isDate(),
+  ],
+  (req, res) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    const { userName } = req.params;
+    let updateUser = req.body;
+    users.findOne({ userName: userName }).then((user) => {
+      if (!user) {
+        return res.status(res.status(400).send(`${userName} doesn't exists.`));
+      }
+    });
+    users
+      .findOneAndUpdate(
+        { userName: userName },
+        {
+          $set: {
+            userName: updateUser.userName,
+            email: updateUser.email,
+            birthday: updateUser.birthday,
+          },
+        },
+        { new: true }
+      )
+      .then((user) => {
+        res.status(201).json(user);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send("Error: " + error);
+      });
+  }
+);
+
 // Put new user name
 app.put(
   "/users/:userName/:newName",
@@ -224,7 +282,11 @@ app.put(
     users
       .findOneAndUpdate(
         { userName: userName },
-        { $set: { userName: newName } },
+        {
+          $set: {
+            userName: newName,
+          },
+        },
         { new: true }
       )
       .then((user) => {
