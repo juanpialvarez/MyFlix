@@ -195,8 +195,9 @@ app.post(
 );
 
 //update user password
-app.post(
+app.put(
   "/users/updatePassword/:userName/",
+  passport.authenticate("jwt", { session: false }),
   [check("password", "Password is required").not().isEmpty()],
   (req, res) => {
     const { userName } = req.params;
@@ -230,6 +231,7 @@ app.post(
 //update user
 app.put(
   "/users/update/:userName",
+  passport.authenticate("jwt", { session: false }),
   [
     check("userName", "Username is required").isLength({ min: 5 }),
     check(
