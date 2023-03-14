@@ -73,7 +73,7 @@ app.get(
         if (user) {
           res.status(201).json(user);
         } else {
-          res.status(400).send(`User ${title} not found`);
+          res.status(400).send(`User ${userName} not found`);
         }
       })
       .catch((err) => {
@@ -118,6 +118,27 @@ app.get(
           res.status(201).json(movie.genre);
         } else {
           res.status(400).send(`Genre ${genre} not found`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(`Error: ${err}`);
+      });
+  }
+);
+
+app.get(
+  "/users/favorites/:userName",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { userName } = req.params;
+    movies
+      .findOne({ "user.userName": userName })
+      .then((user) => {
+        if (user) {
+          res.status(201).json(user.favouriteMovies);
+        } else {
+          res.status(400).send(`User ${userName} not found`);
         }
       })
       .catch((err) => {
