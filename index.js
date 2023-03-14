@@ -19,7 +19,12 @@ require("./passport");
 
 const movies = Models.Movie;
 const users = Models.User;
-
+let allowedOrigins = [
+  "http://localhost:8080",
+  "http://testsite.com",
+  "http://localhost:1234",
+  "myflix94.netlify.app",
+];
 // mongoose.connect("mongodb://127.0.0.1/myFlix", { useNewUrlParser: true });
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true });
 mongoose.set("strictQuery", true);
@@ -42,7 +47,20 @@ app.use((err, req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        let message =
+          "The CORS policy for this application doesn’t allow access from origin " +
+          origin;
+        return callback(new Error(message), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
 let auth = require("./auth")(app);
 
 // HTTP Methods
