@@ -231,7 +231,6 @@ app.put(
     }
     const { userName } = req.params;
     let updateUser = req.body;
-    let hashedPassword = users.hashPassword(updateUser.password);
     users.findOne({ userName: userName }).then((user) => {
       if (!user) {
         return res.status(res.status(400).send(`${userName} doesn't exists.`));
@@ -244,6 +243,20 @@ app.put(
         );
       }
     });
+    users.findOne({ password: updateUser.password }).then((user) => {
+      if (!user) {
+        let hashedPassword = users.hashPassword(updateUser.password);
+        users.findOneAndUpdate(
+          { userName: userName },
+          {
+            $set: {
+              password: hashedPassword,
+            },
+          },
+          { new: true }
+        );
+      }
+    });
     users
       .findOneAndUpdate(
         { userName: userName },
@@ -251,7 +264,6 @@ app.put(
           $set: {
             userName: updateUser.userName,
             email: updateUser.email,
-            password: hashedPassword,
             birthday: updateUser.birthday,
           },
         },
