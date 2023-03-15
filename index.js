@@ -216,8 +216,19 @@ app.post(
 // Put new user name
 app.put(
   "/users/username/:userName/:newName",
+  [
+    check("userName", "Username is required").isLength({ min: 5 }),
+    check(
+      "userName",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+  ],
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     const { userName, newName } = req.params;
     users
       .findOneAndUpdate(
@@ -225,6 +236,105 @@ app.put(
         {
           $set: {
             userName: newName,
+          },
+        },
+        { new: true }
+      )
+      .then((user) => {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(400).send(`User ${userName} not found`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(`Error: ${err}`);
+      });
+  }
+);
+
+// update user email
+app.put(
+  "/users/email/:userName/:newEmail",
+  [check("email", "Email does not appear to be valid").isEmail()],
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    const { userName, newEmail } = req.params;
+    users
+      .findOneAndUpdate(
+        { userName: userName },
+        {
+          $set: {
+            email: newEmail,
+          },
+        },
+        { new: true }
+      )
+      .then((user) => {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(400).send(`User ${userName} not found`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(`Error: ${err}`);
+      });
+  }
+);
+// update user birdthday
+app.put(
+  "/users/birthday/:userName/:newBirthday",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { userName, newBirthday } = req.params;
+    users
+      .findOneAndUpdate(
+        { userName: userName },
+        {
+          $set: {
+            birthday: newBirthday,
+          },
+        },
+        { new: true }
+      )
+      .then((user) => {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(400).send(`User ${userName} not found`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(`Error: ${err}`);
+      });
+  }
+);
+// update user password
+app.put(
+  "/users/password/:userName",
+  [check("password", "Password is required").not().isEmpty()],
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    let newPassword = req.body;
+    const { userName } = req.params;
+    let hashedPassword = users.hashPassword(newPassword.password);
+    users
+      .findOneAndUpdate(
+        { userName: userName },
+        {
+          $set: {
+            password: hashedPassword,
           },
         },
         { new: true }
