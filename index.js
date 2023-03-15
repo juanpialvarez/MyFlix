@@ -24,6 +24,7 @@ let allowedOrigins = [
   "http://testsite.com",
   "http://localhost:1234",
   "myflix94.netlify.app",
+  "https://myflix94.herokuapp.com",
 ];
 // mongoose.connect("mongodb://127.0.0.1/myFlix", { useNewUrlParser: true });
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true });
