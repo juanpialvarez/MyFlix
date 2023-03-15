@@ -257,13 +257,8 @@ app.put(
 // update user email
 app.put(
   "/users/email/:userName/:newEmail",
-  [check("email", "Email does not appear to be valid").isEmail()],
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    let errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
     const { userName, newEmail } = req.params;
     users
       .findOneAndUpdate(
