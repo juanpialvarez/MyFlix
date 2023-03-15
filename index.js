@@ -213,76 +213,9 @@ app.post(
   }
 );
 
-//update user
-app.put(
-  "/users/update/:userName",
-  passport.authenticate("jwt", { session: false }),
-  [
-    check("userName", "Username is required").isLength({ min: 5 }),
-    check(
-      "userName",
-      "Username contains non alphanumeric characters - not allowed."
-    ).isAlphanumeric(),
-    check("email", "Email does not appear to be valid").isEmail(),
-  ],
-  (req, res) => {
-    let errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-    const { userName } = req.params;
-    let updateUser = req.body;
-    users.findOne({ userName: userName }).then((user) => {
-      if (!user) {
-        return res.status(res.status(400).send(`${userName} doesn't exists.`));
-      }
-    });
-    users.findOne({ userName: updateUser.userName }).then((user) => {
-      if (user) {
-        return res.status(
-          res.status(400).send(`${updateUser.userName} already exists.`)
-        );
-      }
-    });
-    users.findOne({ password: updateUser.password }).then((user) => {
-      if (!user) {
-        let hashedPassword = users.hashPassword(updateUser.password);
-        users.findOneAndUpdate(
-          { userName: userName },
-          {
-            $set: {
-              password: hashedPassword,
-            },
-          },
-          { new: true }
-        );
-      }
-    });
-    users
-      .findOneAndUpdate(
-        { userName: userName },
-        {
-          $set: {
-            userName: updateUser.userName,
-            email: updateUser.email,
-            birthday: updateUser.birthday,
-          },
-        },
-        { new: true }
-      )
-      .then((user) => {
-        res.status(201).json(user);
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send("Error: " + error);
-      });
-  }
-);
-
 // Put new user name
 app.put(
-  "/users/:userName/:newName",
+  "/users/username/:userName/:newName",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const { userName, newName } = req.params;
