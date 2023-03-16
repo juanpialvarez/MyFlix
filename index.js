@@ -315,12 +315,8 @@ app.put(
 // update user password
 app.put(
   "/users/password/:userName",
-  // [check("password", "Password is required").not().isEmpty()],
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    // if (!errors.isEmpty()) {
-    //   return res.status(422).json({ errors: errors.array() });
-    // }
     let newPassword = req.body;
     const { userName } = req.params;
     let hashedPassword = users.hashPassword(newPassword.password);
