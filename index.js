@@ -19,13 +19,12 @@ require("./passport");
 
 const movies = Models.Movie;
 const users = Models.User;
-let allowedOrigins = [
+const allowedOrigins = [
   "http://localhost:8080",
   "http://testsite.com",
   "http://localhost:1234",
-  "myflix94.netlify.app",
+  "https://myflix94.netlify.app",
   "https://myflix94.herokuapp.com",
-  "https://myflix94.herokuapp.com/Login",
 ];
 // mongoose.connect("mongodb://127.0.0.1/myFlix", { useNewUrlParser: true });
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true });
