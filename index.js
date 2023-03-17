@@ -50,18 +50,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        let message =
-          "The CORS policy for this application doesn’t allow access from origin " +
-          origin;
-        return callback(new Error(message), false);
-      }
-      return callback(null, true);
-    },
-  })
+  cors()
+  //   {
+  //   origin: (origin, callback) => {
+  //     if (!origin) return callback(null, true);
+  //     if (allowedOrigins.indexOf(origin) === -1) {
+  //       let message =
+  //         "The CORS policy for this application doesn’t allow access from origin " +
+  //         origin;
+  //       return callback(new Error(message), false);
+  //     }
+  //     return callback(null, true);
+  //   },
+  // }
 );
 let auth = require("./auth")(app);
 
