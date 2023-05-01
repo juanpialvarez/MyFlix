@@ -1,49 +1,49 @@
-const test = "test";
+const test = 'test';
 console.log(test);
 const port = process.env.PORT || 8080;
 
-const express = require("express"),
-  morgan = require("morgan"),
-  fs = require("fs"),
-  path = require("path"),
-  bodyParser = require("body-parser"),
-  uuid = require("uuid"),
-  mongoose = require("mongoose"),
-  Models = require("./models.js"),
-  passport = require("passport"),
-  cors = require("cors"),
-  bcrypt = require("bcrypt"),
-  { check, validationResult } = require("express-validator");
+const express = require('express'),
+  morgan = require('morgan'),
+  fs = require('fs'),
+  path = require('path'),
+  bodyParser = require('body-parser'),
+  uuid = require('uuid'),
+  mongoose = require('mongoose'),
+  Models = require('./models.js'),
+  passport = require('passport'),
+  cors = require('cors'),
+  bcrypt = require('bcrypt'),
+  { check, validationResult } = require('express-validator');
 
-require("./passport");
+require('./passport');
 
 const movies = Models.Movie;
 const users = Models.User;
 const allowedOrigins = [
-  "http://localhost:8080",
-  "http://testsite.com",
-  "http://localhost:1234",
-  "https://myflix94.netlify.app",
-  "https://myflix94.herokuapp.com",
+  'http://localhost:8080',
+  'http://testsite.com',
+  'http://localhost:1234',
+  'https://myflix94.netlify.app',
+  'https://myflix94.herokuapp.com',
 ];
 // mongoose.connect("mongodb://127.0.0.1/myFlix", { useNewUrlParser: true });
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true });
-mongoose.set("strictQuery", true);
+mongoose.set('strictQuery', true);
 const db = mongoose.connection;
-db.on("error", (err) => console.error(err));
-db.once("open", () => console.log("Connected to db"));
+db.on('error', (err) => console.error(err));
+db.once('open', () => console.log('Connected to db'));
 
 const app = express();
-const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
-  flags: "a",
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
+  flags: 'a',
 });
 
 // Middware
-app.use(morgan("combined", { stream: accessLogStream }));
-app.use(express.static("public"));
+app.use(morgan('combined', { stream: accessLogStream }));
+app.use(express.static('public'));
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Error");
+  res.status(500).send('Error');
 });
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -54,7 +54,7 @@ app.use(
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) === -1) {
         let message =
-          "The CORS policy for this application doesn’t allow access from origin " +
+          'The CORS policy for this application doesn’t allow access from origin ' +
           origin;
         return callback(new Error(message), false);
       }
@@ -62,14 +62,14 @@ app.use(
     },
   })
 );
-let auth = require("./auth")(app);
+let auth = require('./auth')(app);
 
 // HTTP Methods
 
 // Get movies
 app.get(
-  "/movies",
-  passport.authenticate("jwt", { session: false }),
+  '/movies',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     movies
       .find()
@@ -82,8 +82,8 @@ app.get(
 );
 
 app.get(
-  "/users/:userName",
-  passport.authenticate("jwt", { session: false }),
+  '/users/:userName',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const { userName } = req.params;
     users
@@ -104,8 +104,8 @@ app.get(
 
 // Get movie by title
 app.get(
-  "/movies/:title",
-  passport.authenticate("jwt", { session: false }),
+  '/movies/:title',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const { title } = req.params;
     movies
@@ -126,12 +126,12 @@ app.get(
 
 // Get genre by title
 app.get(
-  "/movies/genre/:genre",
-  passport.authenticate("jwt", { session: false }),
+  '/movies/genre/:genre',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const { genre } = req.params;
     movies
-      .findOne({ "genre.name": genre })
+      .findOne({ 'genre.name': genre })
       .then((movie) => {
         if (movie) {
           res.status(201).json(movie.genre);
@@ -146,14 +146,36 @@ app.get(
   }
 );
 
+// get favourite movies
+app.get(
+  '/movies/favorites/:user',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    const { user } = req.params;
+    users
+      .findOne({ userName: user })
+      .then((user) => {
+        if (user) {
+          res.status(201).json(user.favouriteMovies);
+        } else {
+          res.status(400).send(`Genre ${genre} not found`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(`Error: ${err}`);
+      });
+  }
+);
+
 // Get director by name
 app.get(
-  "/movies/director/:name",
-  passport.authenticate("jwt", { session: false }),
+  '/movies/director/:name',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const { name } = req.params;
     movies
-      .findOne({ "director.name": name })
+      .findOne({ 'director.name': name })
       .then((movie) => {
         if (movie) {
           res.status(201).json(movie.director);
@@ -171,15 +193,15 @@ app.get(
 // Post new user.
 
 app.post(
-  "/users",
+  '/users',
   [
-    check("userName", "Username is required").isLength({ min: 5 }),
+    check('userName', 'Username is required').isLength({ min: 5 }),
     check(
-      "userName",
-      "Username contains non alphanumeric characters - not allowed."
+      'userName',
+      'Username contains non alphanumeric characters - not allowed.'
     ).isAlphanumeric(),
-    check("password", "Password is required").not().isEmpty(),
-    check("email", "Email does not appear to be valid").isEmail(),
+    check('password', 'Password is required').not().isEmpty(),
+    check('email', 'Email does not appear to be valid').isEmail(),
   ],
   (req, res) => {
     let errors = validationResult(req);
@@ -206,7 +228,7 @@ app.post(
           })
           .catch((error) => {
             console.error(error);
-            res.status(500).send("Error: " + error);
+            res.status(500).send('Error: ' + error);
           });
       }
     });
@@ -215,15 +237,15 @@ app.post(
 
 // Put new user name
 app.put(
-  "/users/username/:userName/:newName",
+  '/users/username/:userName/:newName',
   [
-    check("userName", "Username is required").isLength({ min: 5 }),
+    check('userName', 'Username is required').isLength({ min: 5 }),
     check(
-      "userName",
-      "Username contains non alphanumeric characters - not allowed."
+      'userName',
+      'Username contains non alphanumeric characters - not allowed.'
     ).isAlphanumeric(),
   ],
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -256,8 +278,8 @@ app.put(
 
 // update user email
 app.put(
-  "/users/email/:userName/:newEmail",
-  passport.authenticate("jwt", { session: false }),
+  '/users/email/:userName/:newEmail',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const { userName, newEmail } = req.params;
     users
@@ -285,8 +307,8 @@ app.put(
 );
 // update user birdthday
 app.put(
-  "/users/birthday/:userName/:newBirthday",
-  passport.authenticate("jwt", { session: false }),
+  '/users/birthday/:userName/:newBirthday',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const { userName, newBirthday } = req.params;
     users
@@ -314,8 +336,8 @@ app.put(
 );
 // update user password
 app.put(
-  "/users/password/:userName",
-  passport.authenticate("jwt", { session: false }),
+  '/users/password/:userName',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     let newPassword = req.body;
     const { userName } = req.params;
@@ -346,8 +368,8 @@ app.put(
 
 // Put movie into user's movie list
 app.put(
-  "/users/:userName/movies/:movieId",
-  passport.authenticate("jwt", { session: false }),
+  '/users/:userName/movies/:movieId',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const { userName, movieId } = req.params;
     users
@@ -374,8 +396,8 @@ app.put(
 
 // Delete movie from user list of movies
 app.delete(
-  "/users/:userName/movies/:movieId",
-  passport.authenticate("jwt", { session: false }),
+  '/users/:userName/movies/:movieId',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const { userName, movieId } = req.params;
     users
@@ -402,8 +424,8 @@ app.delete(
 
 // Delete user
 app.delete(
-  "/users/:userName",
-  passport.authenticate("jwt", { session: false }),
+  '/users/:userName',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const { userName } = req.params;
     users
@@ -424,6 +446,6 @@ app.delete(
 
 // Listen
 
-app.listen(port, "0.0.0.0", () => {
-  console.log("Listening on Port " + port);
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on Port ' + port);
 });
