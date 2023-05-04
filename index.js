@@ -19,6 +19,11 @@ require('./passport');
 
 const movies = Models.Movie;
 const users = Models.User;
+
+/** CORS ORIGINS
+ * @constant allowedOrigins
+ * Contains CORS origins allowed in the app
+ * */
 const allowedOrigins = [
   'http://localhost:8080',
   'http://localhost:4200',
@@ -39,7 +44,6 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
   flags: 'a',
 });
 
-// Middware
 app.use(morgan('combined', { stream: accessLogStream }));
 app.use(express.static('public'));
 app.use((err, req, res, next) => {
@@ -67,7 +71,9 @@ let auth = require('./auth')(app);
 
 // HTTP Methods
 
-// Get movies
+/** Get all movies
+ * Returns a list of all the movies in a data base.
+ * */
 app.get(
   '/movies',
   passport.authenticate('jwt', { session: false }),
@@ -81,6 +87,12 @@ app.get(
       });
   }
 );
+
+/** Get user
+ * Finds a user by its username
+ * @param userName
+ * Returns a user object
+ * */
 
 app.get(
   '/users/:userName',
@@ -103,7 +115,11 @@ app.get(
   }
 );
 
-// Get movie by title
+/** Get movie
+ * Finds a movie by its title
+ * @param title movie title
+ * Returns a movie object
+ * */
 app.get(
   '/movies/:title',
   passport.authenticate('jwt', { session: false }),
@@ -125,7 +141,11 @@ app.get(
   }
 );
 
-// Get genre by title
+/** Get genre
+ * Finds a genre by its name
+ * @param genre genre name
+ * Returns a genre object
+ * */
 app.get(
   '/movies/genre/:genre',
   passport.authenticate('jwt', { session: false }),
@@ -147,7 +167,11 @@ app.get(
   }
 );
 
-// get favourite movies
+/** Get users favorites
+ * Finds a user's favorite movies by their username
+ * @param user username
+ * Returns an list of movies
+ * */
 app.get(
   '/movies/favorites/:user',
   passport.authenticate('jwt', { session: false }),
@@ -169,7 +193,11 @@ app.get(
   }
 );
 
-// Get director by name
+/** Get director
+ * Finds a director by their name
+ * @param name director name
+ * Returns a director object
+ * */
 app.get(
   '/movies/director/:name',
   passport.authenticate('jwt', { session: false }),
@@ -191,7 +219,15 @@ app.get(
   }
 );
 
-// Post new user.
+/** Sign up
+ * Signs a user up
+ * Sends new user details in the body of the request
+ * @param userName
+ * @param email
+ * @param birthday
+ * @param password
+ * Returns a user object
+ * */
 
 app.post(
   '/users',
@@ -236,7 +272,12 @@ app.post(
   }
 );
 
-// Put new user name
+/** Updates uder name
+ * Function changes the name of a user
+ * @param userName
+ * @param newName
+ * Returns a user object
+ * */
 app.put(
   '/users/username/:userName/:newName',
   [
@@ -367,7 +408,12 @@ app.put(
   }
 );
 
-// Put movie into user's movie list
+/** Put movie into user's movie list
+ * Function places movie ID into user favorites
+ * @param userName
+ * @param movieId
+ * Returns list of favourite movies in the body
+ * */
 app.put(
   '/users/:userName/movies/:movieId',
   passport.authenticate('jwt', { session: false }),
@@ -395,7 +441,11 @@ app.put(
   }
 );
 
-// Delete movie from user list of movies
+/** Delete movie from user favorites
+ * @param userName
+ * @param movieId
+ * Deletes a specific movie from a user's favorits based on its ID.
+ * */
 app.delete(
   '/users/:userName/movies/:movieId',
   passport.authenticate('jwt', { session: false }),
@@ -423,7 +473,10 @@ app.delete(
   }
 );
 
-// Delete user
+/** Delete user
+ * @param userName
+ * Deletes a user based on username.
+ * */
 app.delete(
   '/users/:userName',
   passport.authenticate('jwt', { session: false }),
